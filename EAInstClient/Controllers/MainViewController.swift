@@ -13,7 +13,7 @@ class MainViewController: UIViewController {
     
     struct API {
         static let host = "https://api.instagram.com/v1"
-        static let token = "?access_token"
+        static let token = "?access_token="
         
         static func URLFor(apiMethod: String, token: String)-> String {
             return self.host + apiMethod + self.token + token
@@ -34,18 +34,19 @@ class MainViewController: UIViewController {
             return
         }
         
-        APIManager.shared.load(API.URLFor(apiMethod: "/users/self", token: token)) {
-            (result) in
-            guard let result = (result as? [String:Any])?["data"] as? [String:Any] else {
+        APIManager.shared.load(API.URLFor(apiMethod: "/users/self", token: token)) {[weak self] (result) in
+            print(result)
+            guard let result = (result as? [String: Any])?["data"] as? [String: Any] else {
                 DispatchQueue.main.async {
-                self.userNameLabel.textColor = UIColor.red
-                self.userNameLabel.text = "Error"
+                self?.userNameLabel.textColor = UIColor.red
+                self?.userNameLabel.text = "Error"
                 }
                 return
             }
+            let user = User.init(dictionary: result)
             DispatchQueue.main.async {
-            self.userNameLabel.textColor = UIColor.green
-            self.userNameLabel.text = "Success"
+            self?.userNameLabel.textColor = UIColor.green
+            self?.userNameLabel.text = "\(user.userName)"
             }
             }
     }

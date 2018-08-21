@@ -2,18 +2,21 @@
 import Foundation
 
 class Credential {
-    static var userIsAuthorized: Bool {
-        if (token != nil) {
-            return true
+    
+        static let userDefaultsTokenKey = "userDefaultsTokenKey"
+        
+        
+        static var isUserAuthenticated: Bool {
+            return token != nil
         }
-        return false
+        
+        static var token: String? {
+            get {
+                return UserDefaults.standard.value(forKey: userDefaultsTokenKey) as? String
+            }
+            set {
+                UserDefaults.standard.set(newValue, forKey: userDefaultsTokenKey )
+            }
+        }
     }
-    static var token: String? {
-        get {
-            return UserDefaults.standard.value(forKey: "token") as? String
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "token")
-        }
-    }
-}
+
